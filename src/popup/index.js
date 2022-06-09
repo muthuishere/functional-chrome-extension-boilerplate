@@ -1,6 +1,9 @@
 console.log("hello popup")
 
-changeColor.addEventListener("click", async () => {
+
+//When Click is called
+        // setBackgroundPageColor(getCurrentTab,executeScriptOnTab,)
+document.getElementById("changeColor").addEventListener("click", async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     chrome.scripting.executeScript({
@@ -8,6 +11,9 @@ changeColor.addEventListener("click", async () => {
         function: setPageBackgroundColor,
     });
 });
+
+//Everything is from chrome , how to make it functional
+//Everything is from Events , how to make it functional
 
 // The body of this function will be executed as a content script inside the
 // current page
