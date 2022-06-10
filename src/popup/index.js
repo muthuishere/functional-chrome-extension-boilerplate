@@ -1,18 +1,15 @@
-import {executeScriptAtActiveTab, getActiveTab, storageApi} from "../shared/elements";
+import {setBackGroundColorBasedOnStorage} from "./usecases/setBackgroundColor";
 
-console.log("hello popup")
+
 
 
 //When Click is called
 
 
         // setBackgroundPageColor(getCurrentTab,executeScriptOnTab,)
-document.getElementById("changeColor").addEventListener("click", async () => {
+document.getElementById("changeColor").addEventListener("click", () => {
 
-    await setBackGroundColorBasedOnStorage({
-        executeScriptAtActiveTab,
-        storageApi
-    })
+    setBackGroundColorBasedOnStorage()
 
 
 });

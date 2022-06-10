@@ -1,5 +1,5 @@
 import {onInstalled} from "./usecases/onInstalled";
-import {storageApi} from "../shared/elements";
+import {storageApi} from "../shared/services";
 
 
 

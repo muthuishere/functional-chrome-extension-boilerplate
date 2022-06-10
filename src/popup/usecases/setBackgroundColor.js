@@ -1,20 +1,14 @@
-import {executeScriptAtActiveTab, storageApi} from "../../shared/elements";
+import {executeScriptAtActiveTab, storageApi,setBackgroundColorOfDocument} from "../../shared/services";
 
-function setBackGroundColorBasedOnStorage(){
+console.log("set background color")
+export async function setBackGroundColorBasedOnStorage() {
 
-}
-
-function setPageBackgroundColor({
-                                    executeScriptAtActiveTab,
-                                    storageApi,
-                                    setBackgroundColorOfDocument
-                                }) {
-
-    executeScriptAtActiveTab(setColor({storageApi,setBackgroundColorOfDocument}))
+    await executeScriptAtActiveTab(setColorForPage)
 
 }
 
-async function  setColor({storageApi,setBackgroundColorOfDocument})  {
+export async function  setColorForPage()  {
     const {color} = await storageApi.get("color")
-    setBackgroundColorOfDocument("blue")
+    setBackgroundColorOfDocument(color)
+    console.log("set setColorForPage color")
 }

@@ -13,11 +13,67 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "color": () => (/* binding */ color),
 /* harmony export */   "onInstalled": () => (/* binding */ onInstalled)
 /* harmony export */ });
+/* harmony import */ var _shared_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../shared/services */ "./src/shared/services.js");
 
+
+console.log("hi")
 let color = '#3aa757';
-function onInstalled(storageApi){
-    storageApi.set({ color });
+function onInstalled(){
+    _shared_services__WEBPACK_IMPORTED_MODULE_0__.storageApi.set({ color });
 }
+
+
+/***/ }),
+
+/***/ "./src/shared/services.js":
+/*!********************************!*\
+  !*** ./src/shared/services.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "executeScriptAtActiveTab": () => (/* binding */ executeScriptAtActiveTab),
+/* harmony export */   "executeScriptAtTabId": () => (/* binding */ executeScriptAtTabId),
+/* harmony export */   "getActiveTab": () => (/* binding */ getActiveTab),
+/* harmony export */   "getActiveTabID": () => (/* binding */ getActiveTabID),
+/* harmony export */   "setBackgroundColorOfDocument": () => (/* binding */ setBackgroundColorOfDocument),
+/* harmony export */   "storageApi": () => (/* binding */ storageApi)
+/* harmony export */ });
+
+const storageApi = {
+
+    set:(obj)=>chrome.storage.sync.set(obj),
+    get:async (key)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            chrome.storage.sync.get('key', (data) => {
+                resolve(data)
+            });
+        })
+    }
+
+}
+const getActiveTab = async ()=> chrome.tabs.query({ active: true, currentWindow: true })
+const getActiveTabID = async () => {
+    let [tab] = await getActiveTab()
+    return tab.id
+}
+
+const executeScriptAtTabId = (tabId,fn)=>{
+    chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        function: fn,
+    });
+}
+const executeScriptAtActiveTab = async (fn)=>{
+
+    const tabId= await getActiveTabID()
+    executeScriptAtTabId(tabId,fn)
+}
+
+const setBackgroundColorOfDocument = (color)=>document.body.style.backgroundColor = color;
 
 /***/ })
 
@@ -85,13 +141,15 @@ var __webpack_exports__ = {};
   \*********************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./usecases/onInstalled */ "./src/background/usecases/onInstalled.js");
+/* harmony import */ var _shared_services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/services */ "./src/shared/services.js");
+
 
 
 
 
 
 chrome.runtime.onInstalled.addListener(() => {
-    (0,_usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__.onInstalled)(chrome.storage.sync)
+    (0,_usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__.onInstalled)(_shared_services__WEBPACK_IMPORTED_MODULE_1__.storageApi)
 });
 
 
