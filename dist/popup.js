@@ -10,32 +10,28 @@
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "setBackGroundColorBasedOnStorage": () => (/* binding */ setBackGroundColorBasedOnStorage),
-/* harmony export */   "setColorForPage": () => (/* binding */ setColorForPage)
+/* harmony export */   "setBackGroundColorBasedOnStorage": () => (/* binding */ setBackGroundColorBasedOnStorage)
 /* harmony export */ });
-/* harmony import */ var _shared_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../shared/services */ "./src/shared/services.js");
+/* harmony import */ var _services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/backgroundservices */ "./src/services/backgroundservices.js");
+/* harmony import */ var _shared_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../shared/constants */ "./src/shared/constants.js");
+
 
 
 console.log("set background color")
 async function setBackGroundColorBasedOnStorage() {
 
-    await (0,_shared_services__WEBPACK_IMPORTED_MODULE_0__.executeScriptAtActiveTab)(setColorForPage)
+    await (0,_services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__.executeScriptAtActiveTab)((0,_shared_constants__WEBPACK_IMPORTED_MODULE_1__.getChangeColor)())
 
 }
 
-async function  setColorForPage()  {
-    const {color} = await _shared_services__WEBPACK_IMPORTED_MODULE_0__.storageApi.get("color")
-    ;(0,_shared_services__WEBPACK_IMPORTED_MODULE_0__.setBackgroundColorOfDocument)(color)
-    console.log("set setColorForPage color")
-}
 
 
 /***/ }),
 
-/***/ "./src/shared/services.js":
-/*!********************************!*\
-  !*** ./src/shared/services.js ***!
-  \********************************/
+/***/ "./src/services/backgroundservices.js":
+/*!********************************************!*\
+  !*** ./src/services/backgroundservices.js ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -43,44 +39,48 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "executeScriptAtActiveTab": () => (/* binding */ executeScriptAtActiveTab),
 /* harmony export */   "executeScriptAtTabId": () => (/* binding */ executeScriptAtTabId),
 /* harmony export */   "getActiveTab": () => (/* binding */ getActiveTab),
-/* harmony export */   "getActiveTabID": () => (/* binding */ getActiveTabID),
-/* harmony export */   "setBackgroundColorOfDocument": () => (/* binding */ setBackgroundColorOfDocument),
-/* harmony export */   "storageApi": () => (/* binding */ storageApi)
+/* harmony export */   "getActiveTabID": () => (/* binding */ getActiveTabID)
 /* harmony export */ });
 
-const storageApi = {
-
-    set:(obj)=>chrome.storage.sync.set(obj),
-    get:async (key)=>{
-
-        return new Promise((resolve,reject)=>{
-
-            chrome.storage.sync.get('key', (data) => {
-                resolve(data)
-            });
-        })
-    }
-
-}
 const getActiveTab = async ()=> chrome.tabs.query({ active: true, currentWindow: true })
 const getActiveTabID = async () => {
     let [tab] = await getActiveTab()
     return tab.id
 }
 
-const executeScriptAtTabId = (tabId,fn)=>{
+
+
+const executeScriptAtTabId = (tabId, filename)=>{
     chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        function: fn,
+        target: { tabId:tabId },
+        files: [filename]
     });
-}
-const executeScriptAtActiveTab = async (fn)=>{
 
+}
+const executeScriptAtActiveTab = async (filename)=>{
     const tabId= await getActiveTabID()
-    executeScriptAtTabId(tabId,fn)
+    executeScriptAtTabId(tabId,filename)
 }
 
-const setBackgroundColorOfDocument = (color)=>document.body.style.backgroundColor = color;
+
+
+
+/***/ }),
+
+/***/ "./src/shared/constants.js":
+/*!*********************************!*\
+  !*** ./src/shared/constants.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getChangeColor": () => (/* binding */ getChangeColor)
+/* harmony export */ });
+function getChangeColor(){
+    return "changeColor.js"
+}
+
 
 /***/ })
 

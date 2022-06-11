@@ -6,6 +6,8 @@
   "background": {
     "service_worker": "background.js"
   },
+
+  "host_permissions": ["*://*/*"],
   "permissions": ["storage", "activeTab", "scripting","management" ],
   "options_page": "options.html" ,
   "action": {

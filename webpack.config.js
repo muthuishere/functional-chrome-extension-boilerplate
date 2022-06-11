@@ -28,6 +28,7 @@ module.exports = {
         background: './src/background/index.js',
         popup: './src/popup/index.js',
         options: './src/popup/index.js',
+        changeColor: './src/contentscripts/usecases/changeColor.js',
     },
     output: {
         filename: '[name].js',

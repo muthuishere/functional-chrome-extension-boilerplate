@@ -1,4 +1,4 @@
-import {storageApi} from "../../shared/services";
+import {storageApi} from "../../services/storage";
 
 let selectedClassName = "current";
 const presetButtonColors = ["#3aa757", "#e8453c", "#f9bb2d", "#4688f1"];
@@ -17,6 +17,7 @@ export function setColorAs(color) {
 
 // Add a button to the page for each supplied color
 export async function getButtons() {
+
     const {color } = await storageApi.get("color")
    return  presetButtonColors
             .map(buttonColor => ({color,className:buttonColor===color?selectedClassName:""}))

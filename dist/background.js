@@ -13,22 +13,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "color": () => (/* binding */ color),
 /* harmony export */   "onInstalled": () => (/* binding */ onInstalled)
 /* harmony export */ });
-/* harmony import */ var _shared_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../shared/services */ "./src/shared/services.js");
+/* harmony import */ var _services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/backgroundservices */ "./src/services/backgroundservices.js");
 
 
-console.log("hi")
+
 let color = '#3aa757';
 function onInstalled(){
-    _shared_services__WEBPACK_IMPORTED_MODULE_0__.storageApi.set({ color });
+    _services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__.storageApi.set({ color });
+    console.log("set Color")
 }
 
 
 /***/ }),
 
-/***/ "./src/shared/services.js":
-/*!********************************!*\
-  !*** ./src/shared/services.js ***!
-  \********************************/
+/***/ "./src/services/backgroundservices.js":
+/*!********************************************!*\
+  !*** ./src/services/backgroundservices.js ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -36,44 +37,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "executeScriptAtActiveTab": () => (/* binding */ executeScriptAtActiveTab),
 /* harmony export */   "executeScriptAtTabId": () => (/* binding */ executeScriptAtTabId),
 /* harmony export */   "getActiveTab": () => (/* binding */ getActiveTab),
-/* harmony export */   "getActiveTabID": () => (/* binding */ getActiveTabID),
-/* harmony export */   "setBackgroundColorOfDocument": () => (/* binding */ setBackgroundColorOfDocument),
-/* harmony export */   "storageApi": () => (/* binding */ storageApi)
+/* harmony export */   "getActiveTabID": () => (/* binding */ getActiveTabID)
 /* harmony export */ });
 
-const storageApi = {
-
-    set:(obj)=>chrome.storage.sync.set(obj),
-    get:async (key)=>{
-
-        return new Promise((resolve,reject)=>{
-
-            chrome.storage.sync.get('key', (data) => {
-                resolve(data)
-            });
-        })
-    }
-
-}
 const getActiveTab = async ()=> chrome.tabs.query({ active: true, currentWindow: true })
 const getActiveTabID = async () => {
     let [tab] = await getActiveTab()
     return tab.id
 }
 
-const executeScriptAtTabId = (tabId,fn)=>{
+
+
+const executeScriptAtTabId = (tabId, filename)=>{
     chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        function: fn,
+        target: { tabId:tabId },
+        files: [filename]
     });
-}
-const executeScriptAtActiveTab = async (fn)=>{
 
+}
+const executeScriptAtActiveTab = async (filename)=>{
     const tabId= await getActiveTabID()
-    executeScriptAtTabId(tabId,fn)
+    executeScriptAtTabId(tabId,filename)
 }
 
-const setBackgroundColorOfDocument = (color)=>document.body.style.backgroundColor = color;
+
+
 
 /***/ })
 
@@ -141,7 +129,7 @@ var __webpack_exports__ = {};
   \*********************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./usecases/onInstalled */ "./src/background/usecases/onInstalled.js");
-/* harmony import */ var _shared_services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/services */ "./src/shared/services.js");
+/* harmony import */ var _services_backgroundservices__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/backgroundservices */ "./src/services/backgroundservices.js");
 
 
 
@@ -149,7 +137,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 chrome.runtime.onInstalled.addListener(() => {
-    (0,_usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__.onInstalled)(_shared_services__WEBPACK_IMPORTED_MODULE_1__.storageApi)
+    (0,_usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__.onInstalled)(_services_backgroundservices__WEBPACK_IMPORTED_MODULE_1__.storageApi)
 });
 
 

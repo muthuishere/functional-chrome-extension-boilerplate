@@ -1,5 +1,5 @@
 import {color, onInstalled} from "./onInstalled";
-import {setBackgroundColorOfDocument, storageApi} from "../../shared/services";
+import {setBackgroundColorOfDocument, storageApi} from "../../services/background";
 
 
 test('onInstalled should set the default color on storageAPi', () => {
