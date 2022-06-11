@@ -1,13 +1,19 @@
-import { storageApi} from "../../services/storage";
-import {setBackgroundColorOfDocument} from "../../services/dom";
+import {setBackgroundColorOfDocument} from "../../services/dom.service";
+import {sendMessage} from "../../services/contentscript.service";
+import {initContentScriptWith} from "../../services/injector.service";
 
-export async function  setColorForPage()  {
+function getColorFromBackgroundPage() {
+    return sendMessage({type: "getColor"});
+}
 
-    const ar = await storageApi.get("color")
-    console.log("set color for page",ar)
-    setBackgroundColorOfDocument(ar.color)
+export async function  setPageColor()  {
+
+    const {color} = await getColorFromBackgroundPage()
+
+    console.log("setting color to",color)
+    setBackgroundColorOfDocument(color)
 
 }
 
-
-setColorForPage()
+// The following is to start content script after injection
+initContentScriptWith(setPageColor);

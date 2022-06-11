@@ -2,7 +2,7 @@
 
 /*
 
-import {setBackGroundColorBasedOnStorage, setColorForPage} from "./setBackgroundColor";
+import {setBackGroundColorBasedOnStorage, setPageColor} from "./setBackgroundColor";
 
 // All these files are mocked in
  */

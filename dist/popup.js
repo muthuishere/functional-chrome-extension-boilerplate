@@ -12,7 +12,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "setBackGroundColorBasedOnStorage": () => (/* binding */ setBackGroundColorBasedOnStorage)
 /* harmony export */ });
-/* harmony import */ var _services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/backgroundservices */ "./src/services/backgroundservices.js");
+/* harmony import */ var _services_background_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/background.service */ "./src/services/background.service.js");
 /* harmony import */ var _shared_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../shared/constants */ "./src/shared/constants.js");
 
 
@@ -20,7 +20,7 @@ __webpack_require__.r(__webpack_exports__);
 console.log("set background color")
 async function setBackGroundColorBasedOnStorage() {
 
-    await (0,_services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__.executeScriptAtActiveTab)((0,_shared_constants__WEBPACK_IMPORTED_MODULE_1__.getChangeColor)())
+    await (0,_services_background_service__WEBPACK_IMPORTED_MODULE_0__.executeScriptAtActiveTab)((0,_shared_constants__WEBPACK_IMPORTED_MODULE_1__.getChangeColor)())
 
 }
 
@@ -28,9 +28,9 @@ async function setBackGroundColorBasedOnStorage() {
 
 /***/ }),
 
-/***/ "./src/services/backgroundservices.js":
+/***/ "./src/services/background.service.js":
 /*!********************************************!*\
-  !*** ./src/services/backgroundservices.js ***!
+  !*** ./src/services/background.service.js ***!
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -151,24 +151,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-//When Click is called
-
-
-        // setBackgroundPageColor(getCurrentTab,executeScriptOnTab,)
 document.getElementById("changeColor").addEventListener("click", () => {
 
     (0,_usecases_setBackgroundColor__WEBPACK_IMPORTED_MODULE_0__.setBackGroundColorBasedOnStorage)()
-
-
 });
-
-//Everything is from chrome , how to make it functional
-//Everything is from Events , how to make it functional
-
-// The body of this function will be executed as a content script inside the
-// current page
 
 })();
 

@@ -20,14 +20,16 @@ module.exports = {
                 ],
             }),
             new RunChromeExtension({
-                   extensionPath: path.resolve(__dirname, 'dist')
+                   extensionPath: path.resolve(__dirname, 'dist'),
+                startingUrl: 'https://www.google.com',
+                autoReload: true,
  })
         ],
 
     entry: {
         background: './src/background/index.js',
         popup: './src/popup/index.js',
-        options: './src/popup/index.js',
+        options: './src/options/index.js',
         changeColor: './src/contentscripts/usecases/changeColor.js',
     },
     output: {

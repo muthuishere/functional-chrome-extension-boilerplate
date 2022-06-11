@@ -1,42 +1,35 @@
-import {getButtons, getSelectedClassName, setColorAs} from "./usecases/events";
+import {getAvailableColorButtons} from "./usecases/optionPageBuilder";
+import {onColorChange} from "./usecases/changeDefaultColor";
+import {addClassTo} from "../services/dom.service";
 
-let page = document.getElementById("buttonDiv");
 
 // Reacts to a button click by marking the selected button and saving
 // the selection
 function handleButtonClick(event) {
-    // Remove styling from the previously selected color
-    const selectedClassName= getSelectedClassName()
-    let eventTarget = event.target;
 
-    let current = eventTarget.parentElement.querySelector(
-        `.${selectedClassName}`
-    );
-    if (current && current !== eventTarget) {
-        current.classList.remove(selectedClassName);
-    }
-
-    // Mark the button as selected
-    let color = eventTarget.dataset.color;
-    eventTarget.classList.add(selectedClassName);
-    setColorAs(color);
+    onColorChange(event.target);
 }
 
+function createButton({color, className}) {
+    console.log(color);
+    console.log(className);
+    let button = document.createElement("button");
+    button.dataset.color = color;
+    button.style.backgroundColor = color;
+    addClassTo(button, className);
+    button.addEventListener("click", handleButtonClick);
+    return button;
+}
 // Add a button to the page for each supplied color
 async function constructOptions() {
 
-    const buttons = await getButtons();
+    let page = document.getElementById("buttonDiv");
+    const buttons = await getAvailableColorButtons();
 
-    buttons.forEach(({color,className}) => {
-        let button = document.createElement("button");
-        button.dataset.color = color;
-        button.style.backgroundColor = color;
-        button.classList.add(className);
-        button.addEventListener("click", handleButtonClick);
-        page.appendChild(button);
-    })
+    console.log(buttons);
+    buttons.map(createButton).forEach(button => page.appendChild(button));
 
 }
 
 // Initialize the page by constructing the color options
-constructOptions();
+constructOptions().then(r => console.log(r));

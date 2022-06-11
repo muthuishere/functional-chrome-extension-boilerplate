@@ -6,7 +6,7 @@ export const storageApi = {
 
         return new Promise((resolve,reject)=>{
 
-            chrome.storage.sync.get('key', (data) => {
+            chrome.storage.sync.get(key, (data) => {
                 console.log("retrieved data",data)
                 resolve(data)
             });

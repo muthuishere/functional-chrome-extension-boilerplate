@@ -1,4 +1,4 @@
-import {executeScriptAtActiveTab, storageApi,setBackgroundColorOfDocument} from "../../services/background";
+import {executeScriptAtActiveTab, setBackgroundColorOfDocument, storageApi} from "../../services/background.service";
 import {setBackGroundColorBasedOnStorage, setColorForPage} from "./setBackgroundColor";
 import {mockWhen} from "../../shared/mocks.test";
 

@@ -1,4 +1,4 @@
-import {storageApi} from "../../services/storage";
+import {storageApi} from "../../services/storage.service";
 
 
 export let color = '#3aa757';

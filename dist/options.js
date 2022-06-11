@@ -2,83 +2,131 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/popup/usecases/setBackgroundColor.js":
-/*!**************************************************!*\
-  !*** ./src/popup/usecases/setBackgroundColor.js ***!
-  \**************************************************/
+/***/ "./src/options/usecases/changeDefaultColor.js":
+/*!****************************************************!*\
+  !*** ./src/options/usecases/changeDefaultColor.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "setBackGroundColorBasedOnStorage": () => (/* binding */ setBackGroundColorBasedOnStorage)
+/* harmony export */   "onColorChange": () => (/* binding */ onColorChange)
 /* harmony export */ });
-/* harmony import */ var _services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/backgroundservices */ "./src/services/backgroundservices.js");
-/* harmony import */ var _shared_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../shared/constants */ "./src/shared/constants.js");
+/* harmony import */ var _services_storage_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/storage.service */ "./src/services/storage.service.js");
+/* harmony import */ var _services_dom_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../services/dom.service */ "./src/services/dom.service.js");
+/* harmony import */ var _optionPageBuilder__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./optionPageBuilder */ "./src/options/usecases/optionPageBuilder.js");
 
 
 
-console.log("set background color")
-async function setBackGroundColorBasedOnStorage() {
 
-    await (0,_services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__.executeScriptAtActiveTab)((0,_shared_constants__WEBPACK_IMPORTED_MODULE_1__.getChangeColor)())
+
+function onColorChange(selectedButton) {
+
+    let classSelector = "." + _optionPageBuilder__WEBPACK_IMPORTED_MODULE_2__.selectedClassName;
+    const previousSelectedButton = (0,_services_dom_service__WEBPACK_IMPORTED_MODULE_1__.querySelectorOnParent)(selectedButton, classSelector);
+
+
+    if (previousSelectedButton && previousSelectedButton !== selectedButton) {
+        (0,_services_dom_service__WEBPACK_IMPORTED_MODULE_1__.removeClassFrom)(previousSelectedButton, _optionPageBuilder__WEBPACK_IMPORTED_MODULE_2__.selectedClassName);
+    }
+
+
+    let color = (0,_services_dom_service__WEBPACK_IMPORTED_MODULE_1__.getDataAttribute)(selectedButton,"color") ;
+    (0,_services_dom_service__WEBPACK_IMPORTED_MODULE_1__.addClassTo)(selectedButton, _optionPageBuilder__WEBPACK_IMPORTED_MODULE_2__.selectedClassName);
+
+    _services_storage_service__WEBPACK_IMPORTED_MODULE_0__.storageApi.set({ color });
 
 }
-
 
 
 /***/ }),
 
-/***/ "./src/services/backgroundservices.js":
-/*!********************************************!*\
-  !*** ./src/services/backgroundservices.js ***!
-  \********************************************/
+/***/ "./src/options/usecases/optionPageBuilder.js":
+/*!***************************************************!*\
+  !*** ./src/options/usecases/optionPageBuilder.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "executeScriptAtActiveTab": () => (/* binding */ executeScriptAtActiveTab),
-/* harmony export */   "executeScriptAtTabId": () => (/* binding */ executeScriptAtTabId),
-/* harmony export */   "getActiveTab": () => (/* binding */ getActiveTab),
-/* harmony export */   "getActiveTabID": () => (/* binding */ getActiveTabID)
+/* harmony export */   "getAvailableColorButtons": () => (/* binding */ getAvailableColorButtons),
+/* harmony export */   "presetButtonColors": () => (/* binding */ presetButtonColors),
+/* harmony export */   "selectedClassName": () => (/* binding */ selectedClassName)
 /* harmony export */ });
+/* harmony import */ var _services_storage_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/storage.service */ "./src/services/storage.service.js");
 
-const getActiveTab = async ()=> chrome.tabs.query({ active: true, currentWindow: true })
-const getActiveTabID = async () => {
-    let [tab] = await getActiveTab()
-    return tab.id
+
+const presetButtonColors = ["#3aa757", "#e8453c", "#f9bb2d", "#4688f1"];
+const selectedClassName = "current";
+
+async function getAvailableColorButtons() {
+    const {color }  = await _services_storage_service__WEBPACK_IMPORTED_MODULE_0__.storageApi.get("color")
+
+    return  presetButtonColors
+        .map(buttonColor => ({color:buttonColor,className:buttonColor===color?selectedClassName:""}))
 }
-
-
-
-const executeScriptAtTabId = (tabId, filename)=>{
-    chrome.scripting.executeScript({
-        target: { tabId:tabId },
-        files: [filename]
-    });
-
-}
-const executeScriptAtActiveTab = async (filename)=>{
-    const tabId= await getActiveTabID()
-    executeScriptAtTabId(tabId,filename)
-}
-
-
 
 
 /***/ }),
 
-/***/ "./src/shared/constants.js":
-/*!*********************************!*\
-  !*** ./src/shared/constants.js ***!
-  \*********************************/
+/***/ "./src/services/dom.service.js":
+/*!*************************************!*\
+  !*** ./src/services/dom.service.js ***!
+  \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getChangeColor": () => (/* binding */ getChangeColor)
+/* harmony export */   "addClassTo": () => (/* binding */ addClassTo),
+/* harmony export */   "getDataAttribute": () => (/* binding */ getDataAttribute),
+/* harmony export */   "querySelectorOnParent": () => (/* binding */ querySelectorOnParent),
+/* harmony export */   "removeClassFrom": () => (/* binding */ removeClassFrom),
+/* harmony export */   "setBackgroundColorOfDocument": () => (/* binding */ setBackgroundColorOfDocument)
 /* harmony export */ });
-function getChangeColor(){
-    return "changeColor.js"
+const setBackgroundColorOfDocument = (color)=>document.body.style.backgroundColor = color;
+
+const querySelectorOnParent = (element, selector) =>  element.parentElement.querySelector(
+    `${selector}`
+);
+
+const removeClassFrom = (element, className) => element.classList.remove(className);
+const addClassTo = (element, className) => {
+    if(!!className && element.classList.contains(className) === false)
+        element.classList.add(className);
+}
+
+const getDataAttribute = (element, attributeName) => {
+  return   element.getAttribute(`data-${attributeName}`);
+}
+
+
+/***/ }),
+
+/***/ "./src/services/storage.service.js":
+/*!*****************************************!*\
+  !*** ./src/services/storage.service.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "storageApi": () => (/* binding */ storageApi)
+/* harmony export */ });
+
+const storageApi = {
+
+    set:(obj)=>chrome.storage.sync.set(obj),
+    get:async (key)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            chrome.storage.sync.get(key, (data) => {
+                console.log("retrieved data",data)
+                resolve(data)
+            });
+        })
+    }
+
 }
 
 
@@ -143,32 +191,48 @@ function getChangeColor(){
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!****************************!*\
-  !*** ./src/popup/index.js ***!
-  \****************************/
+/*!******************************!*\
+  !*** ./src/options/index.js ***!
+  \******************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _usecases_setBackgroundColor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./usecases/setBackgroundColor */ "./src/popup/usecases/setBackgroundColor.js");
+/* harmony import */ var _usecases_optionPageBuilder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./usecases/optionPageBuilder */ "./src/options/usecases/optionPageBuilder.js");
+/* harmony import */ var _usecases_changeDefaultColor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./usecases/changeDefaultColor */ "./src/options/usecases/changeDefaultColor.js");
+/* harmony import */ var _services_dom_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/dom.service */ "./src/services/dom.service.js");
 
 
 
 
 
-//When Click is called
+// Reacts to a button click by marking the selected button and saving
+// the selection
+function handleButtonClick(event) {
 
+    (0,_usecases_changeDefaultColor__WEBPACK_IMPORTED_MODULE_1__.onColorChange)(event.target);
+}
 
-        // setBackgroundPageColor(getCurrentTab,executeScriptOnTab,)
-document.getElementById("changeColor").addEventListener("click", () => {
+function createButton({color, className}) {
+    console.log(color);
+    console.log(className);
+    let button = document.createElement("button");
+    button.dataset.color = color;
+    button.style.backgroundColor = color;
+    (0,_services_dom_service__WEBPACK_IMPORTED_MODULE_2__.addClassTo)(button, className);
+    button.addEventListener("click", handleButtonClick);
+    return button;
+}
+// Add a button to the page for each supplied color
+async function constructOptions() {
 
-    (0,_usecases_setBackgroundColor__WEBPACK_IMPORTED_MODULE_0__.setBackGroundColorBasedOnStorage)()
+    let page = document.getElementById("buttonDiv");
+    const buttons = await (0,_usecases_optionPageBuilder__WEBPACK_IMPORTED_MODULE_0__.getAvailableColorButtons)();
 
+    console.log(buttons);
+    buttons.map(createButton).forEach(button => page.appendChild(button));
 
-});
+}
 
-//Everything is from chrome , how to make it functional
-//Everything is from Events , how to make it functional
-
-// The body of this function will be executed as a content script inside the
-// current page
+// Initialize the page by constructing the color options
+constructOptions().then(r => console.log(r));
 
 })();
 

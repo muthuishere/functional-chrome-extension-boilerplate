@@ -2,6 +2,35 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/background/usecases/globalMessageHandler.js":
+/*!*********************************************************!*\
+  !*** ./src/background/usecases/globalMessageHandler.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "onMessage": () => (/* binding */ onMessage)
+/* harmony export */ });
+/* harmony import */ var _services_storage_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/storage.service */ "./src/services/storage.service.js");
+
+
+
+async function onMessage(request, sender, sendResponse) {
+    console.log('===> FROM THE BACKGROUND:', request);
+    if (request.type === 'getColor') {
+        const {color} = await _services_storage_service__WEBPACK_IMPORTED_MODULE_0__.storageApi.get('color')
+        let response = {color};
+        console.log("onMessage", response);
+        sendResponse(response);
+
+    }
+}
+
+
+
+/***/ }),
+
 /***/ "./src/background/usecases/onInstalled.js":
 /*!************************************************!*\
   !*** ./src/background/usecases/onInstalled.js ***!
@@ -13,54 +42,45 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "color": () => (/* binding */ color),
 /* harmony export */   "onInstalled": () => (/* binding */ onInstalled)
 /* harmony export */ });
-/* harmony import */ var _services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/backgroundservices */ "./src/services/backgroundservices.js");
+/* harmony import */ var _services_storage_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../services/storage.service */ "./src/services/storage.service.js");
 
 
 
 let color = '#3aa757';
 function onInstalled(){
-    _services_backgroundservices__WEBPACK_IMPORTED_MODULE_0__.storageApi.set({ color });
+    _services_storage_service__WEBPACK_IMPORTED_MODULE_0__.storageApi.set({ color });
     console.log("set Color")
 }
 
 
 /***/ }),
 
-/***/ "./src/services/backgroundservices.js":
-/*!********************************************!*\
-  !*** ./src/services/backgroundservices.js ***!
-  \********************************************/
+/***/ "./src/services/storage.service.js":
+/*!*****************************************!*\
+  !*** ./src/services/storage.service.js ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "executeScriptAtActiveTab": () => (/* binding */ executeScriptAtActiveTab),
-/* harmony export */   "executeScriptAtTabId": () => (/* binding */ executeScriptAtTabId),
-/* harmony export */   "getActiveTab": () => (/* binding */ getActiveTab),
-/* harmony export */   "getActiveTabID": () => (/* binding */ getActiveTabID)
+/* harmony export */   "storageApi": () => (/* binding */ storageApi)
 /* harmony export */ });
 
-const getActiveTab = async ()=> chrome.tabs.query({ active: true, currentWindow: true })
-const getActiveTabID = async () => {
-    let [tab] = await getActiveTab()
-    return tab.id
+const storageApi = {
+
+    set:(obj)=>chrome.storage.sync.set(obj),
+    get:async (key)=>{
+
+        return new Promise((resolve,reject)=>{
+
+            chrome.storage.sync.get(key, (data) => {
+                console.log("retrieved data",data)
+                resolve(data)
+            });
+        })
+    }
+
 }
-
-
-
-const executeScriptAtTabId = (tabId, filename)=>{
-    chrome.scripting.executeScript({
-        target: { tabId:tabId },
-        files: [filename]
-    });
-
-}
-const executeScriptAtActiveTab = async (filename)=>{
-    const tabId= await getActiveTabID()
-    executeScriptAtTabId(tabId,filename)
-}
-
-
 
 
 /***/ })
@@ -129,18 +149,23 @@ var __webpack_exports__ = {};
   \*********************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./usecases/onInstalled */ "./src/background/usecases/onInstalled.js");
-/* harmony import */ var _services_backgroundservices__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/backgroundservices */ "./src/services/backgroundservices.js");
-
-
+/* harmony import */ var _usecases_globalMessageHandler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./usecases/globalMessageHandler */ "./src/background/usecases/globalMessageHandler.js");
 
 
 
 
 chrome.runtime.onInstalled.addListener(() => {
-    (0,_usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__.onInstalled)(_services_backgroundservices__WEBPACK_IMPORTED_MODULE_1__.storageApi)
+    (0,_usecases_onInstalled__WEBPACK_IMPORTED_MODULE_0__.onInstalled)()
 });
 
+chrome.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
 
+        (0,_usecases_globalMessageHandler__WEBPACK_IMPORTED_MODULE_1__.onMessage)(request, sender, sendResponse);
+        return true
+
+    }
+);
 
 })();
 
