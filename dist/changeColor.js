@@ -75,7 +75,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "initContentScriptWith": () => (/* binding */ initContentScriptWith)
 /* harmony export */ });
+//Execute only when extension is set, When running tests,dont do anything
 const initContentScriptWith = (fn, ... args) =>{
+
     if(typeof chrome !== "undefined") {
         fn(args)
     }
